@@ -7,8 +7,10 @@ class MainContainer extends Component {
 
   state = {
     stocks: [],
-    portfolio: []
-    
+    portfolio: [],
+    filterTerm: "All",
+    sortTerm: ""
+
   }
 
   componentDidMount(){
@@ -25,46 +27,86 @@ class MainContainer extends Component {
   }
 
   buyStock = (stock) => {
-    // console.log(stock)
 
+    this.setState((prevState)=>{
+      return {
 
-    this.setState({
-      
-      portfolio:[...this.state.portfolio, stock]
-      
+        portfolio: [stock, ...prevState.portfolio]
+
+      }
     })
-    // console.log(stock)
   }
-
+  
   sellStock = (stock) => {
-    console.log("sold",stock)
-    // let soldStockPortfolio = this.state.portfolio.pop(stock)
-    let filteredPortfolio = this.state.portfolio.filter((stockObj) => {
-        stock.id !== stockObj.id
-    }
-    )
+    
+    // let index = this.state.portfolio.indexOf(stock)
+    // let stocks = [...this.state.portfolio]
+    //  stocks.splice(index,1)
+
+    //  this.setState({
+    //    portfolio: stocks
+    //  })
+
+    // let index = this.state.portfolio.indexOf(stock)
+    let portfolioStocks = this.state.portfolio.filter(stockobj => stockobj.id !== stock.id )
+
     this.setState({
-      
-      portfolio: filteredPortfolio
-      
+
+      portfolio: portfolioStocks
+
     })
-    console.log(filteredPortfolio)
+    // console.log(stocks)
+
   }
 
-  // wichstock = (event) => {
-  //   // if stock is reg execute buy stock (return buy stock)
-  //   if () {
+  setFilterTerm = (term) => {
+    console.log(term)
+    this.setState({
+
+      filterTerm: term 
+
+    })
+  }
+  
+  wichStocksToRender = () => {
+    let copiedStocks = this.state.stocks
+
+    if (this.state.filterTerm === "All") {
       
-  //   } else {
+      copiedStocks = [...this.state.stocks]
+
+    } else {
+
+      copiedStocks = this.state.stocks.filter((stock) => stock.type === this.state.filterTerm)
       
-  //   }
-     
-  //   // else execute sell stock (return sell stock)
-  // }
+    }
+
+    if (this.state.sortTerm === "Price") {
+      
+      copiedStocks.sort((stockA,stockB) => stockA.price - stockB.price)
+
+    } else if (this.state.sortTerm === "Alphabetically") {
+ 
+      copiedStocks.sort((stockA,stockB) => stockA.name.localeCompare(stockB.name))
+
+    }
+
+    return copiedStocks
+
+  }
   
+  setSortTerm = (term) => {
+
+    // let alphabeticalSort = this.state.stocks.sort(stockA,stockB)
+
+    this.setState({
+      sortTerm: term
+    })
+    // console.log(event)
+
+  }
   
-  
-  
+
   // allow a user to buy a stock by clicking on it and when it is bought, it should be added to My Portfolio.
   
   
@@ -72,17 +114,27 @@ class MainContainer extends Component {
     // console.log(this.state.stocks)
     return (
       <div>
-        <SearchBar/>
+        <SearchBar
+        
+        term={this.state.filterTerm}
+        setFilterTerm={this.setFilterTerm}
+        setSortTerm={this.setSortTerm}
+        sortTerm={this.state.sortTerm}
+        />
 
           <div className="row">
             <div className="col-8">
 
-              <StockContainer stocks={this.state.stocks} buyStock={this.buyStock} sellStock={this.sellStock}/>
+              <StockContainer 
+              stocks={this.wichStocksToRender()} 
+              buyStock={this.buyStock} />
 
             </div>
             <div className="col-4">
 
-              <PortfolioContainer portfolio={this.state.portfolio} sellStock={this.sellStock} />
+              <PortfolioContainer 
+              portfolio={this.state.portfolio} 
+              sellStock={this.sellStock} />
 
             </div>
           </div>

@@ -8,7 +8,7 @@ const Stock = (props) => (
   // ()=>props.buyStock(props.stock)
   <div>
 
-    <div className="card">
+    <div className="card" onClick={() => props.handleClick(props.stock)}>
       <div className="card-body" >
         <h5 className="card-title">{
             //Company Name
@@ -18,8 +18,8 @@ const Stock = (props) => (
             //ticker: stock price
             `${props.stock.ticker}: ${props.stock.price}`
           }</p>
-          <button onClick={()=>props.buyStock(props.stock)}>buy</button>
-          <button onClick={()=>props.sellStock(props.stock)}>sell</button>
+          {/* <button onClick={()=>props.buyStock(props.stock)}>buy</button> */}
+          {/* <button onClick={()=>props.sellStock(props.stock)}>sell</button> */}
       </div>
     </div>
 

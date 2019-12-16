@@ -15,8 +15,8 @@ class StockContainer extends Component {
         {
           //render the list of stocks here
           
-          this.props.stocks.map((stock) => {
-            return <Stock stock={stock} key={stock.id} buyStock={this.props.buyStock} sellStock={this.props.sellStock}/>
+          this.props.stocks.map((stock, idx) => {
+            return <Stock id={stock.id} stock={stock} key={idx} handleClick={this.props.buyStock}/>
           }
           )
           
