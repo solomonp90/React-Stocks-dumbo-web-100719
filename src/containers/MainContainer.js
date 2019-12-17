@@ -7,7 +7,9 @@ class MainContainer extends Component {
 
   state = {
     stocks: [],
-    portfolio: []
+    portfolio: [],
+    filterTerm: "All",
+    sortTerm: ""
     
   }
 
@@ -37,7 +39,7 @@ class MainContainer extends Component {
   }
 
   sellStock = (stock) => {
-    console.log("sold",stock)
+    // console.log("sold",stock)
     // let soldStockPortfolio = this.state.portfolio.pop(stock)
     let filteredPortfolio = this.state.portfolio.filter((stockObj) => {
         stock.id !== stockObj.id
@@ -48,19 +50,48 @@ class MainContainer extends Component {
       portfolio: filteredPortfolio
       
     })
-    console.log(filteredPortfolio)
+    // console.log(filteredPortfolio)
   }
 
-  // wichstock = (event) => {
-  //   // if stock is reg execute buy stock (return buy stock)
-  //   if () {
-      
-  //   } else {
-      
-  //   }
+  setFilterTerm = (term) => { 
+    // console.log(userSearch)
+   this.setState({
+
+     filterTerm: term
+
+   })
+  }
+  
+  setSortTerm = (term) => {
+    console.log(term)
+    this.setState({
+      sortTerm: term
+    })
+  }
+  
+
+  wichstock = () => {
+
+    // console.log()
+    let stocks = [...this.state.stocks]
+    if (this.state.filterTerm === "All") {
+       stocks = [...this.state.stocks]
+    } else {
+       stocks = this.state.stocks.filter(stock => stock.type === this.state.filterTerm)
+    }
      
-  //   // else execute sell stock (return sell stock)
-  // }
+    if (this.state.sortTerm === "Alphabetically") {
+       stocks.sort((stockA, stockB) => {
+       return stockA.name.localeCompare(stockB.name) 
+       }
+       )
+    } else if(this.state.sortTerm === "Price"){
+      stocks.sort((stockA, stockB) => {
+        return stockA.price - stockB.price
+      })
+    }
+   return stocks
+  }
   
   
   
@@ -72,17 +103,26 @@ class MainContainer extends Component {
     // console.log(this.state.stocks)
     return (
       <div>
-        <SearchBar/>
+        <SearchBar 
+        setFilterTerm={this.setFilterTerm}
+        filterTerm={this.state.filterTerm}
+        setSortTerm={this.setSortTerm}
+        sortTerm={this.state.sortTerm}
+        />
 
           <div className="row">
             <div className="col-8">
 
-              <StockContainer stocks={this.state.stocks} buyStock={this.buyStock} sellStock={this.sellStock}/>
+              <StockContainer 
+              stocks={this.wichstock()} 
+              buyStock={this.buyStock} />
 
             </div>
             <div className="col-4">
 
-              <PortfolioContainer portfolio={this.state.portfolio} sellStock={this.sellStock} />
+              <PortfolioContainer 
+              portfolio={this.state.portfolio} 
+              sellStock={this.sellStock} />
 
             </div>
           </div>
